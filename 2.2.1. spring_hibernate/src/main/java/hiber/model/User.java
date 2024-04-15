@@ -2,12 +2,15 @@ package hiber.model;
 
 import javax.persistence.*;
 
+
+//Uni-directional отношение. У Юзера может быть много машин. Но у машины может быть 1 Юзер.
 @Entity
 @Table(name = "users")
 public class User {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name = "id")
    private Long id;
 
    @Column(name = "name")
@@ -19,8 +22,13 @@ public class User {
    @Column(name = "email")
    private String email;
 
+   //У Юзера будет ссылка на машину по связи через id. Все события в БД связанные с Юзером будут (CascadeType) отражаться и на машине
+   @OneToOne (cascade = CascadeType.ALL)
+   @JoinColumn(name = "car_id",referencedColumnName = "id")
+   private Car car;
+
    public User() {}
-   
+
    public User(String firstName, String lastName, String email) {
       this.firstName = firstName;
       this.lastName = lastName;
@@ -57,5 +65,19 @@ public class User {
 
    public void setEmail(String email) {
       this.email = email;
+   }
+
+   //Добавим методы, чтобы у Юзера можно будет установить/забрать его машину.
+   public Car getCar() {
+      if (car == null) {
+         throw new NullPointerException("User has no Car");
+      } else {
+         return car;
+      }
+
+   }
+
+   public void setCar(Car car) {
+      this.car = car;
    }
 }
