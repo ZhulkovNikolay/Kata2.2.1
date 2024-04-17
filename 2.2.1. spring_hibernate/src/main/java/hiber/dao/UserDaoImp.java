@@ -6,19 +6,19 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-//добавил сюда аннотацию @Transactional. Без него вылетает ошибка
-//Could not obtain transaction-synchronized Session for current thread
 @Repository
-@Transactional
 public class UserDaoImp implements UserDao {
 
-    @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired //Добавил связь Бинов через Сеттер
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public void add(User user) {
@@ -32,12 +32,12 @@ public class UserDaoImp implements UserDao {
         return query.getResultList();
     }
 
-    //добавляем машину Юзеру
-    @Override
-    public void addCar(User user, Car car) {
-        user.setCar(car);
-        sessionFactory.getCurrentSession().save(user);
-    }
+    //не нужен этот метод addCar(User user, Car car) , используй связь @OneToOne и каскадирование
+//    @Override
+//    public void addCar(User user, Car car) {
+//        user.setCar(car);
+//        sessionFactory.getCurrentSession().save(user);
+//    }
 
     //В сервис добавьте метод, который с помощью hql-запроса будет доставать юзера, владеющего машиной по ее модели и серии.
     @Override

@@ -16,15 +16,18 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-
 @Configuration
 @PropertySource("classpath:db.properties")
 @EnableTransactionManagement
 @ComponentScan(value = "hiber")
 public class AppConfig {
 
-   @Autowired
    private Environment env;
+
+   @Autowired //Добавил связь Бинов через Сеттер
+   public void setEnv(Environment env) {
+      this.env = env;
+   }
 
    @Bean
    public DataSource getDataSource() {

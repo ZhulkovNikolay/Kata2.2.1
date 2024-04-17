@@ -12,8 +12,12 @@ import java.util.List;
 @Service
 public class UserServiceImp implements UserService {
 
-   @Autowired
    private UserDao userDao;
+
+   @Autowired //Добавил связь Бинов через Сеттер
+   public void setUserDao(UserDao userDao) {
+      this.userDao = userDao;
+   }
 
    @Transactional
    @Override
@@ -27,13 +31,14 @@ public class UserServiceImp implements UserService {
       return userDao.listUsers();
    }
 
-   //новый метод, дополняющий старый для добавления машин
-   @Override
-   public void add(User user, Car car) {
-      userDao.addCar(user, car);
-   }
+   //не нужен этот метод addCar(User user, Car car) , используй связь @OneToOne и каскадирование
+  // @Override
+  // public void add(User user, Car car) {
+  //    userDao.addCar(user, car);
+  // }
 
    //В сервис добавьте метод, который с помощью hql-запроса будет доставать юзера, владеющего машиной по ее модели и серии.
+   @Transactional(readOnly = true) //разобрался что такое @Transactional и перенес его из ДАО слоя сюда
    @Override
    public User getUserForCarModelAndSeries(String model, int series) {
       return userDao.getUserForCarModelAndSeries(model, series);
